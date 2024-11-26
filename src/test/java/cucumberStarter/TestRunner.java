@@ -5,12 +5,16 @@ import io.cucumber.java.Before;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 import utils.DriverManager;
+import utils.Helper;
+
+import java.time.Duration;
 
 @CucumberOptions(
         features = "src/test/java/features",
         glue = "steps",
-        plugin = {"html:target/cucumber-html-report",
-        "json:target/cucumber-json-report.json" }
+        plugin = {"pretty",
+                "html:target/cucumber-html-report",
+                "json:target/cucumber-json-report.json"}
 )
 
 public class TestRunner extends AbstractTestNGCucumberTests {
@@ -21,7 +25,13 @@ public class TestRunner extends AbstractTestNGCucumberTests {
     }
 
     @After
-    public void shutDown(){
+    public void shutDown() {
+        Helper.getInstance().getScreenshot(DriverManager.getInstance().getDriver());
+        try {
+            Thread.sleep(Duration.ofSeconds(5));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         DriverManager.getInstance().shutDownWebDriver();
     }
 
